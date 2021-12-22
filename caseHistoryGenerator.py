@@ -69,7 +69,7 @@ def generateCaseHistory(receivedFileNumbers, listOfKarpelCases):
 	))])
 
 	fig.update_layout(title_text="Basic Sankey Diagram", font_size=10)
-	fig.write_html("TestOutput.html")
+	fig.write_html("TestOutput2.html")
 
 
 generateCaseHistory(listOfFNs, listOfKarpelCases)
