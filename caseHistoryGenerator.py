@@ -1,16 +1,101 @@
 import pandas as pd 
 from KarpelStarter import karpelStarter
 import plotly.graph_objects as go
+import numpy as np
 
-#Under Review - Subtract (Received - Filed - Not Filed = Under Review)
 
-#Currently Pending/Under Warrant Status (Filed - Disposed = Currently Pending/Under Warrant Status)
-#Disposed = Count How Many of Those File Fumbers Appear in Disposed Cases
+def factorize(s):
+    a = pd.factorize(s, sort=True)[0]
+    return (a + 0.01) / (max(a) + 0.1)
 
-listOfFNs = list(set(pd.read_excel("testCases.xlsx")['File #'].tolist()))
-listOfKarpelCases = karpelStarter()
 
-def generateCaseHistory(receivedFileNumbers, listOfKarpelCases):
+def generateAllCaseHistory(crimeCategory, numberOfIncidents, receivedFileNumbers, listOfKarpelCases):
+
+	#print("Number of Incidents: " + str(numberOfIncidents))
+
+	numberNotReferred = numberOfIncidents-len(receivedFileNumbers)
+	#print("Number Not Referred: " + str(numberNotReferred))
+
+	#Received - Count Unique File Numbers - Number of Received Cases
+	#print("Received Cases: " + str(len(receivedFileNumbers)))
+
+	#Filed - Count How Many of Those File Numbers Appear in Filed
+	filedSet = set(listOfKarpelCases[1]['File #'].tolist())
+	filedFileNumbers = filedSet.intersection(receivedFileNumbers)
+	#print("Filed Cases: " + str(len(filedFileNumbers)))
+
+	#Not Filed - Count How Many of Those File Numbers Appear in Not-Filed
+	declinedSet = set(listOfKarpelCases[3]['File #'].tolist())
+	declinedFileNumbers = declinedSet.intersection(receivedFileNumbers)
+	declinedFileNumbers = declinedFileNumbers.difference(filedSet)
+	#print("Declined Cases: " + str(len(declinedFileNumbers)))
+
+	#Under Review = Received - Filed - Not Filed
+	reviewSet = set(receivedFileNumbers).difference(filedSet).difference(declinedFileNumbers)
+	#print("Cases Under Review: " + str(len(reviewSet)))
+
+	#Disposed Cases
+	disposedSet = set(listOfKarpelCases[2]['File #'].tolist())
+	disposedFileNumbers = disposedSet.intersection(receivedFileNumbers)
+	disposedFileNumbers = list(disposedSet.intersection(filedFileNumbers))
+	#print("Disposed Cases: " + str(len(disposedFileNumbers)))
+
+	#Currently Pending/Under Warrant Status
+	#Currently Pending = Filed - Disposed
+	activeSet = set(filedFileNumbers).difference(disposedFileNumbers)
+	#print("Currently Active Cases: " + str(len(activeSet)))
+
+	#Review Position
+	reviewPos = len(reviewSet)/len(receivedFileNumbers)
+	declinePos = reviewPos - len(declinedFileNumbers)/len(receivedFileNumbers)
+	filedPos = declinePos - len(filedFileNumbers)/len(receivedFileNumbers)
+	activePos = filedPos - len(activeSet)/len(receivedFileNumbers)
+	disposedPos = len(declinedFileNumbers)/len(receivedFileNumbers)
+
+	yPositions = []
+
+	links = [
+		{'source': 'A - Incidents Occured', 'target':'B - Received by Office', 'value': len(receivedFileNumbers)},
+		{'source': 'A - Incidents Occured', 'target':'B - Not Received By Office', 'value':numberNotReferred},
+		{'source': 'B - Received by Office', 'target':'C - Declined', 'value':len(declinedFileNumbers)},
+		{'source': 'B - Received by Office', 'target':'C - Under Review', 'value':len(reviewSet)},
+		{'source': 'B - Received by Office', 'target':'C - Cases Filed', 'value':len(filedFileNumbers)},
+		{'source': 'C - Cases Filed', 'target':'E - Cases Disposed', 'value':len(disposedFileNumbers)},
+		{'source': 'C - Cases Filed', 'target':'D - Case Active', 'value':len(activeSet)},
+	]
+
+	df = pd.DataFrame(links)
+
+	#print(df.head())
+	nodes = np.unique(df[["source","target"]], axis=None)
+	nodes = pd.Series(index=nodes, data=range(len(nodes)))
+
+	#work out node position
+	nodes = (
+		nodes.to_frame("id")
+		.assign(
+			x = lambda d: factorize(d.index.str[0]),
+			y = lambda d: factorize(d.index.str[0]),
+		)
+	)
+
+	fig = go.Figure(
+    	go.Sankey(
+    		arrangement = "snap",
+    	    node={"label": nodes.index, "x": nodes["x"], "y": nodes["y"]},
+    	    link={
+    	        "source": nodes.loc[df["source"], "id"],
+    	        "target": nodes.loc[df["target"], "id"],
+     	       "value": df["value"],
+     	   },
+    	)
+	)
+
+	fig.update_layout(title_text=crimeCategory, font_size=10)
+	fig.write_html("Sankeys\\"+crimeCategory + ".html")
+
+
+def generateJCPOCaseHistory(receivedFileNumbers, listOfKarpelCases):
 
 	#Received - Count Unique File Numbers - Number of Received Cases
 	print("Received Cases: " + str(len(receivedFileNumbers)))
@@ -71,5 +156,3 @@ def generateCaseHistory(receivedFileNumbers, listOfKarpelCases):
 	fig.update_layout(title_text="Basic Sankey Diagram", font_size=10)
 	fig.write_html("TestOutput2.html")
 
-
-generateCaseHistory(listOfFNs, listOfKarpelCases)

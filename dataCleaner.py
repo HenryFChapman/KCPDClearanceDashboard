@@ -4,9 +4,14 @@ import os
 def dataCleaner(karpelCases):
 
 	chargeCategories = pd.read_excel("FBI NIBRS Offense Codes.xlsx")
-
 	crimeDataDirectory = "Raw Crime Data\\"
+
+	allCleanData = []
+
+	#yearDictionary = dict()
+
 	for item in os.listdir(crimeDataDirectory):
+
 		df = pd.read_csv(crimeDataDirectory+item, low_memory=False)
 		#df['ibrs'] = df['ibrs'].astype(str)
 
@@ -30,11 +35,17 @@ def dataCleaner(karpelCases):
 		#Filter Just Felony Categories
 		df = df[df['Felony']=="Yes"]
 
-		incidents = df.groupby('CRN')['Offense Description'].apply(set).to_frame().reset_index()
+		incidents = df.groupby('CRN')['Category'].apply(set).to_frame().reset_index()
 
 		referredFileNumbers = karpelCases[0].groupby('CRN')['File #'].apply(set).to_frame().reset_index()
 		incidents = incidents.merge(referredFileNumbers, on = 'CRN', how = 'left')
 
-		#incidents.to_csv("List of Cases.csv")
-		#incidents = incidents.merge(karpelCases[0], on = 'CRN', how = 'left')
-		#incidents.to_csv(item)
+		allCleanData.append(incidents)
+
+		#year = item.split("-")[1].split(".")[0]
+
+		#yearDictionary.update({year:incidents})
+
+	allCleanData = pd.concat(allCleanData)
+
+	return allCleanData
