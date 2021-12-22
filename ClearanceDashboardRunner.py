@@ -2,7 +2,7 @@ from KarpelStarter import karpelStarter
 from dataGatherer import dataGatherer
 from dataCleaner import dataCleaner
 
-#dataGatherer()
+dataGatherer()
 
 karpelCases = karpelStarter()
 

@@ -3,14 +3,23 @@ import pandas as pd
 import numpy as np
 from sodapy import Socrata
 
-
 def dataGatherer():
 	#API Key ID : 7hhuc5nwifgpr7kwbxktaftlu
 	#API Key Secret: 5tt36r2dh4ltvwxsw5i65uk21dc76xzmfkbumummr63z3sgvnb
 
+
+	with open("authKeys.txt") as f:
+		lines = f.readlines()
+
+	keyID = lines[0].split(":")[1].split("\n")[0]
+
+	print(keyID)
+	keySecret = lines[1].split(":")[1]
+	print(keySecret)
+
 	kcpdDataDictionary = {2017:"98is-shjt", 2018:"dmjw-d28i", 2019:"pxaa-ahcm", 2020:"vsgj-uufz", 2021:"w795-ffu6"}
 
-	client = Socrata("data.kcmo.org","W4eVE8n4fpyTw7QMpZFbr6qWJ",username="7hhuc5nwifgpr7kwbxktaftlu",password="5tt36r2dh4ltvwxsw5i65uk21dc76xzmfkbumummr63z3sgvnb")
+	client = Socrata("data.kcmo.org","W4eVE8n4fpyTw7QMpZFbr6qWJ",username=keyID,password=keySecret)
 
 	for year in kcpdDataDictionary.keys():
 		results = client.get(kcpdDataDictionary.get(year), limit = 300000)
