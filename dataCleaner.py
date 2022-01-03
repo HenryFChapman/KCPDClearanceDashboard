@@ -42,10 +42,6 @@ def dataCleaner(karpelCases):
 
 		allCleanData.append(incidents)
 
-		#year = item.split("-")[1].split(".")[0]
-
-		#yearDictionary.update({year:incidents})
-
 	allCleanData = pd.concat(allCleanData)
 
 	return allCleanData
