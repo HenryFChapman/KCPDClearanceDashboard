@@ -28,7 +28,7 @@ def generateCSV():
 
 def clearanceDashboardRunner():
 	
-	dataGatherer()
+	#dataGatherer()
 	karpelCases = karpelStarter()
 	kcpdCases = dataCleaner(karpelCases)
 	chargeCategories = pd.read_excel("FBI NIBRS Offense Codes.xlsx")

@@ -74,7 +74,7 @@ def loadKarpelCases(directory, mostRecent):
 
 	#Old Received Cases
 	oldReceivedCases = pd.read_csv("RawData\\1 - Received.csv")
-	oldReceivedCases = oldReceivedCases[oldReceivedCases['Year']!=2021]
+	oldReceivedCases = oldReceivedCases[oldReceivedCases['Year']!=2022]
 	oldReceivedCases = oldReceivedCases[['File #', "CRN", "Agency", "Enter Dt.", "Def. Name", "Def. Sex", "Def. Race", "Def. DOB", "Ref. Charge Code", "Ref. Charge Description"]]
 
 	#New Received Cases
@@ -91,7 +91,7 @@ def loadKarpelCases(directory, mostRecent):
 
 	#Old Filed Cases
 	oldFiledCases = pd.read_csv("RawData\\2 - Filed.csv")
-	oldFiledCases = oldFiledCases[oldFiledCases['Year']!=2021]
+	oldFiledCases = oldFiledCases[oldFiledCases['Year']!=2022]
 	oldFiledCases = oldFiledCases[['File #', "CRN", "Agency", "Enter Dt.", "Filing Dt.", "Def. Name", "Def. Sex", "Def. Race", "Def. DOB", "Ref. Charge Code", "Ref. Charge Description"]]
 
 	#New Filed Cases
@@ -104,7 +104,7 @@ def loadKarpelCases(directory, mostRecent):
 
 	#Old Disposed Cases
 	oldDisposedCases = pd.read_csv("RawData\\3 - Disposed.csv")
-	oldDisposedCases = oldDisposedCases[oldDisposedCases['Year']!=2021]
+	oldDisposedCases = oldDisposedCases[oldDisposedCases['Year']!=2022]
 	oldDisposedCases = oldDisposedCases[["File #", "CRN","Agency", "Disp. Dt.", "Enter Dt.",  "Ref. Charge Code", "Ref. Charge Description", "Disp. Code", ]]
 
 	#New Disposed Cases
@@ -121,7 +121,7 @@ def loadKarpelCases(directory, mostRecent):
 
 	#Old Refused Cases
 	oldRefusedCases = pd.read_csv("RawData\\4 - Refused.csv")
-	oldRefusedCases = oldRefusedCases[oldRefusedCases['Year']!=2021]
+	oldRefusedCases = oldRefusedCases[oldRefusedCases['Year']!=2022]
 	disposedCases = disposedCases.rename(columns={'Def  Name': 'Def. Name', 'Enter Dt ': 'Enter Dt.', 'Def  DOB': "Def. DOB", "Def  Race":"Def. Race", "Def Sex":"Def. Sex", "Charge Code":"Ref. Charge Code", "Charge Desctiption": "Ref. Charge Description", 'Filing Date.': 'Filing Dt.'})
 	oldRefusedCases = oldRefusedCases[["File #", "CRN", "Disp. Code", "Disp. Dt.", "Agency", "Enter Dt.", 'Ref. Charge Code', 'Ref. Charge Description', ]]
 
@@ -133,7 +133,7 @@ def loadKarpelCases(directory, mostRecent):
 
 	refusalReasons = pd.read_csv("RefusalReasons.csv", encoding = 'utf-8')
 	oldRefusedCases = oldRefusedCases.merge(refusalReasons, on = 'Disp. Code', how = 'left')
-	oldRefusedCases = oldRefusedCases[["File #", "CRN", "Reason", "Disp. Dt.", "Agency", "Enter Dt.", "Ref. Charge Code", "Ref. Charge Description"]]
+	#oldRefusedCases = oldRefusedCases[["File #", "CRN", "Reason",  "Disp. Dt.", "Agency", "Enter Dt.", "Ref. Charge Code", "Ref. Charge Description"]]
 	oldRefusedCases = oldRefusedCases.rename(columns = {'Reason':'Disp. Code'})
 	oldRefusedCases = oldRefusedCases[oldRefusedCases['Agency'] == 2]
 

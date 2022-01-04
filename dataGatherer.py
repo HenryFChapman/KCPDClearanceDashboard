@@ -19,6 +19,6 @@ def dataGatherer():
 		results = client.get(kcpdDataDictionary.get(year), limit = 300000)
 		df = pd.DataFrame.from_dict(results)
 
-		df = df.rename(columns={'location_1': 'location', 'report_date':'reported_date', 'firearmused_flag':'firearm_used_flag', 'report_time':'reported_time' })
+		df = df.rename(columns={'location_1': 'location', 'report_date':'reported_date', 'firearmused_flag':'firearm_used_flag', 'firearmusedflag': 'firearm_used_flag','report_time':'reported_time' })
 
 		df.to_csv("Raw Crime Data\\KCPD-" + str(year) + ".csv", index = False)
