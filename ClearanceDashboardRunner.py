@@ -9,15 +9,15 @@ import shutil
 
 def generateCSV():
 
-	sankeys = os.listdir("Sankeys")
+	sankeys = os.listdir("Sankeys\\KCPDClearance\\")
 	names = []
 	links = []
 
 	for item in sankeys:
 		justName = item.split(".")[0]
-		names.append(justName)
+		names.append(justName.split(" - ")[1])
 		justName = item.replace(" ", "%20")
-		link = "https://kcpdclearance.firebaseapp.com/"+justName
+		link = "https://kcpdclearance.firebaseapp.com/KCPDClearance/"+justName
 		links.append(link)
 
 	dataFrame = pd.DataFrame()
@@ -35,9 +35,9 @@ def clearanceDashboardRunner():
 	chargeCategories = chargeCategories[chargeCategories['Felony'] == "Yes"]
 	crimeCategoriesList = list(set(chargeCategories['Category'].tolist()))
 
-	if os.path.isdir('Sankeys'):
-		shutil.rmtree("Sankeys")
-	os.mkdir("Sankeys")
+	#if os.path.isdir('Sankeys'):
+	#	shutil.rmtree("Sankeys")
+	#os.mkdir("Sankeys")
 
 	for crimeCategory in crimeCategoriesList:
 
