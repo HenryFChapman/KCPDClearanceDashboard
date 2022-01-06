@@ -18,15 +18,11 @@ def reasonsToNodes(reasonDF, links):
 
 	return links
 
-def generateAllCaseHistory(crimeCategory, numberOfIncidents, receivedFileNumbers, listOfKarpelCases):
+def generateAllCaseHistory(crimeCategory, numberOfIncidents, atLeast1ReferredCase, receivedFileNumbers, listOfKarpelCases):
 
-	#print("Number of Incidents: " + str(numberOfIncidents))
+	remainingMultiDefendants = len(receivedFileNumbers) - atLeast1ReferredCase
 
-	numberNotReferred = numberOfIncidents-len(receivedFileNumbers)
-	#print("Number Not Referred: " + str(numberNotReferred))
-
-	#Received - Count Unique File Numbers - Number of Received Cases
-	#print("Received Cases: " + str(len(receivedFileNumbers)))
+	numberNotReferred = numberOfIncidents-atLeast1ReferredCase
 
 	#Filed - Count How Many of Those File Numbers Appear in Filed
 	filedSet = set(listOfKarpelCases[1]['File #'].tolist())
@@ -52,15 +48,9 @@ def generateAllCaseHistory(crimeCategory, numberOfIncidents, receivedFileNumbers
 	#Currently Pending = Filed - Disposed
 	activeSet = set(filedFileNumbers).difference(disposedFileNumbers)
 
-	#Review Position
-	reviewPos = len(reviewSet)/len(receivedFileNumbers)
-	declinePos = reviewPos - len(declinedFileNumbers)/len(receivedFileNumbers)
-	filedPos = declinePos - len(filedFileNumbers)/len(receivedFileNumbers)
-	activePos = filedPos - len(activeSet)/len(receivedFileNumbers)
-	disposedPos = len(declinedFileNumbers)/len(receivedFileNumbers)
-
 	links = [
-		{'source': 'A - Incidents Occured', 'target':'B - Received by Office', 'value': len(receivedFileNumbers)},
+		{'source': 'A - Incidents Occured', 'target':'B - Received by Office', 'value': atLeast1ReferredCase},
+		{'source': 'A - Additional Defendants', 'target':'B - Received by Office', 'value':remainingMultiDefendants}, 
 		{'source': 'A - Incidents Occured', 'target':'B - Not Received By Office', 'value':numberNotReferred},
 		{'source': 'B - Received by Office', 'target':'C - Declined', 'value':len(declinedFileNumbers)},
 		{'source': 'B - Received by Office', 'target':'C - Under Review', 'value':len(reviewSet)},
