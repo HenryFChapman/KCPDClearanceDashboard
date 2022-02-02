@@ -71,23 +71,24 @@ def generateAllCaseHistory(crimeCategory, numberOfIncidents, atLeast1ReferredCas
 	nodes = (
 		nodes.to_frame("id").assign(
 			x = lambda d: factorize(d.index.str[0]),
-			y = lambda d: factorize(d.index.str[0])/5,
+			y = lambda d: factorize(d.index.str[0])/3,
 		)
 	)
 
 	fig = go.Figure(
     	go.Sankey(
+    		textfont=dict(color="rgba(255,255,255,1)", size=10),
     		arrangement = "snap",
-    	    node={"label": nodes.index, "x": nodes["x"], "y": nodes["y"]},
+    	    node={"label": nodes.index.str[3:], "x": nodes["x"], "y": nodes["y"]},
     	    link={
     	        "source": nodes.loc[df["source"], "id"],
     	        "target": nodes.loc[df["target"], "id"],
      	       	"value": df["value"],
-     	       	"color": 'lightgrey'
+     	       	"color": 'grey'
      	   },
     	)
 	)
-	fig.update_layout(title =  dict(text ="KCPD Case Referrals of " + crimeCategory + " Cases Received (Jan. 1, 2017 to Present)",
-                               font =dict(size=30,
-                               color = 'White')), font_size=15, title_x=0.5, plot_bgcolor='rgba(34,34,34,255)', paper_bgcolor='rgba(34,34,34,255)',)
+
+	fig.update_layout(title =  dict(text ="KCPD Case Referrals of " + crimeCategory, font =dict(size=30, color = 'Black')), font_size=10, title_x=0.5)
+	#fig.update_layout(title =  dict(text ="KCPD Case Referrals of " + crimeCategory, font =dict(size=30, color = 'White')), font_size=10, title_x=0.5, plot_bgcolor='rgba(34,34,34,255)', paper_bgcolor='rgba(34,34,34,255)',)
 	fig.write_html("Sankeys\\KCPDClearance\\KCPDClearance - "+crimeCategory + ".html")

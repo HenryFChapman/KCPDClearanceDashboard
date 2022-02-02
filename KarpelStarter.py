@@ -85,7 +85,10 @@ def loadKarpelCases(directory, mostRecent):
 	
 	oldReceivedCases = oldReceivedCases.append(receivedCases)
 	oldReceivedCases = oldReceivedCases[oldReceivedCases['Agency'] == 2]
+
 	oldReceivedCases = oldReceivedCases.dropna(subset = ["CRN"])
+	oldReceivedCases = oldReceivedCases[oldReceivedCases['CRN']!='QRST']
+	#print(oldReceivedCases['CRN'].tolist())
 	oldReceivedCases['CRN'] = oldReceivedCases['CRN'].astype(str).str.replace(r'\D+', '').str[:2] + "-" + oldReceivedCases['CRN'].astype(str).str.replace(r'\D+', '').str[2:].astype('int64').astype(str)
 	karpelDataFrames.append(oldReceivedCases)
 

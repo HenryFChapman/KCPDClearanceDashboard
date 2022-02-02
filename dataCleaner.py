@@ -40,6 +40,8 @@ def dataCleaner(karpelCases):
 		referredFileNumbers = karpelCases[0].groupby('CRN')['File #'].apply(set).to_frame().reset_index()
 		incidents = incidents.merge(referredFileNumbers, on = 'CRN', how = 'left')
 
+		incidents['Year'] = item.split(".")[0].split("-")[1]
+
 		allCleanData.append(incidents)
 
 	allCleanData = pd.concat(allCleanData)
