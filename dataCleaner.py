@@ -27,8 +27,11 @@ def dataCleaner(karpelCases):
 		#2. Convert to string
 		#3. Cut off year (first two characters)
 		#4. Convert to integer
-		df['CRN'] = df['report_no'].astype(str).str.replace(r'\D+', '').str[:2] + "-" + df['report_no'].astype(str).str.replace(r'\D+', '').str[2:].astype('int64').astype(str)
 
+
+		df['CRN'] = df['report_no'].astype(str).str.replace(r'\D+', '', regex = True).str[:2] + "-" + df['report_no'].astype(str).str.replace(r'\D+', '', regex = True).str[2:].astype('int64').astype(str)
+		df = df[df['CRN'].str.contains(r'\d')]
+		
 		df = df[['CRN', 'reported_date', 'reported_time', 'offense', 'ibrs', 'description', 'address', 'city', 'zip_code', 'area', 'dvflag', 'involvement', 'race', 'sex', 'firearm_used_flag', 'age', 'location']]		
 		df = df.merge(chargeCategories.astype(str), on = "ibrs", how = 'left')
 

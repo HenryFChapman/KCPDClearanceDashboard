@@ -83,10 +83,10 @@ def loadKarpelCases(directory, mostRecent):
 	receivedCases = receivedCases.rename({'Def  Name': 'Def. Name', 'Enter Dt ': 'Enter Dt.', 'Def  DOB': "Def. DOB", "Def  Race":"Def. Race", "Def Sex":"Def. Sex", "Ref  Charge":"Ref. Charge Code", "Ref  Charge Desctiption": "Ref. Charge Description"}, axis=1) 
 	receivedCases = receivedCases[['File #', "CRN", "Agency", "Enter Dt.","Def. Name", "Def. Race", "Def. Sex", "Def. DOB", "Ref. Charge Code", "Ref. Charge Description"]]
 	
-	oldReceivedCases = oldReceivedCases.append(receivedCases)
+	oldReceivedCases = pd.concat([oldReceivedCases, receivedCases])
 	oldReceivedCases = oldReceivedCases[oldReceivedCases['Agency'] == 2]
 	oldReceivedCases = oldReceivedCases.dropna(subset = ["CRN"])
-	oldReceivedCases['CRN'] = oldReceivedCases['CRN'].astype(str).str.replace(r'\D+', '').str[:2] + "-" + oldReceivedCases['CRN'].astype(str).str.replace(r'\D+', '').str[2:].astype('int64').astype(str)
+	oldReceivedCases['CRN'] = oldReceivedCases['CRN'].astype(str).str.replace(r'\D+', '', regex = True).str[:2] + "-" + oldReceivedCases['CRN'].astype(str).str.replace(r'\D+', '', regex = True).str[2:].astype('int64').astype(str)
 	karpelDataFrames.append(oldReceivedCases)
 
 	#Old Filed Cases
@@ -98,7 +98,7 @@ def loadKarpelCases(directory, mostRecent):
 	filedCases = pd.read_csv(directory + "Fld_" + mostRecent + "_1800.CSV", encoding='utf-8')
 	filedCases = filedCases.rename(columns={'Def  Name': 'Def. Name', 'Enter Dt ': 'Enter Dt.', 'Def  DOB': "Def. DOB", "Def  Race":"Def. Race", "Def Sex":"Def. Sex", "Ref. Charge":"Ref. Charge Code", "Ref. Charge Desctiption": "Ref. Charge Description", 'Filing Date.': 'Filing Dt.'})
 	filedCases = filedCases[['File #', "CRN", "Agency", "Enter Dt.", "Filing Dt.", "Def. Name", "Def. Sex", "Def. Race", "Def. DOB", "Ref. Charge Code", "Ref. Charge Description"]]
-	oldFiledCases = oldFiledCases.append(filedCases)
+	oldFiledCases = pd.concat([oldFiledCases, filedCases])
 	oldFiledCases = oldFiledCases[oldFiledCases['Agency'] == 2]
 	karpelDataFrames.append(oldFiledCases)
 
@@ -111,8 +111,7 @@ def loadKarpelCases(directory, mostRecent):
 	disposedCases = pd.read_csv(directory + "Disp_"+mostRecent+"_1800.CSV", encoding='utf-8')
 	disposedCases = disposedCases.rename(columns={'Def  Name': 'Def. Name', 'Enter Dt ': 'Enter Dt.', 'Def  DOB': "Def. DOB", "Def  Race":"Def. Race", "Def Sex":"Def. Sex", "Charge Code":"Ref. Charge Code", "Charge Desctiption": "Ref. Charge Description", 'Filing Date.': 'Filing Dt.'})
 	disposedCases = disposedCases[["File #", "CRN", "Agency", "Disp. Dt.", "Enter Dt.",  "Ref. Charge Code", "Ref. Charge Description", "Disp. Code", ]]
-	oldDisposedCases = oldDisposedCases.append(disposedCases)
-	
+	oldDisposedCases = pd.concat([oldDisposedCases, disposedCases])
 	dispositionReasons = pd.read_csv("Disposition Codes.csv")
 	oldDisposedCases = oldDisposedCases.merge(dispositionReasons, on = "Disp. Code", how = 'left')
 	oldDisposedCases = oldDisposedCases[oldDisposedCases['Agency'] == 2]
@@ -129,7 +128,8 @@ def loadKarpelCases(directory, mostRecent):
 	notFiledCases = pd.read_csv(directory + "Ntfld_"+mostRecent+"_1800.csv")
 	notFiledCases = notFiledCases.rename(columns={'Def  Name': 'Def. Name', 'Enter Dt ': 'Enter Dt.', 'Def  DOB': "Def. DOB", "Def  Race":"Def. Race", "Def Sex":"Def. Sex", "Charge Code":"Ref. Charge Code", "Ref.Charge Desctiption": "Ref. Charge Description", 'Filing Date.': 'Filing Dt.'})
 	notFiledCases = notFiledCases[["File #", "CRN", "Disp. Code", "Disp. Dt.", "Agency", "Enter Dt.", 'Ref. Charge Code', 'Ref. Charge Description', ]]
-	oldRefusedCases = oldRefusedCases.append(notFiledCases)
+
+	oldRefusedCases = pd.concat([oldRefusedCases, notFiledCases])
 
 	refusalReasons = pd.read_csv("RefusalReasons.csv", encoding = 'utf-8')
 	oldRefusedCases = oldRefusedCases.merge(refusalReasons, on = 'Disp. Code', how = 'left')

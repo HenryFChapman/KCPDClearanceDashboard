@@ -40,21 +40,16 @@ def generateCSV():
 
 def clearanceDashboardRunner():
 	
-	dataGatherer()
+	#dataGatherer()
 	karpelCases = karpelStarter()
 	kcpdCases = dataCleaner(karpelCases)
 	chargeCategories = pd.read_excel("FBI NIBRS Offense Codes.xlsx")
 	chargeCategories = chargeCategories[chargeCategories['Felony'] == "Yes"]
 	crimeCategoriesList = list(set(chargeCategories['Category'].tolist()))
 
-	print(kcpdCases.head())
 	listOfYears = list(set(kcpdCases['Year'].tolist()))
-
-	print(listOfYears)
-
 	categoriesToInclude = ['Fraud', 'Homicide', 'Assault', 'Robbery', 'Burglary', 'Arson', 'Drugs', 'Embezzlement',
 							'Family Offenses', 'Forgery', 'Kidnapping or Abduction', 'Motor Vehicle Theft', 'Sex Offenses', 'Weapons Law Violations']
-
 
 	for crimeCategory in crimeCategoriesList:
 
