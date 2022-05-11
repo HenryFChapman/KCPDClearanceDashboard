@@ -12,8 +12,6 @@ def factorize(s):
 def reasonsToNodes(reasonDF, links):
 
 	reasonDictionaries = reasonDF.to_dict(orient = 'records')
-	#print(reasonDictionaries)
-
 	links.extend(reasonDictionaries)
 
 	return links
@@ -42,7 +40,6 @@ def generateAllCaseHistory(crimeCategory, numberOfIncidents, atLeast1ReferredCas
 	disposedFileNumbers = disposedSet.intersection(receivedFileNumbers)
 	disposedFileNumbers = list(disposedSet.intersection(filedFileNumbers))
 	disposalReasons = disposedCaseCounter(disposedFileNumbers, listOfKarpelCases[2])
-	#print(disposalReasons.head())
 
 	#Currently Pending/Under Warrant Status
 	#Currently Pending = Filed - Disposed
@@ -90,5 +87,4 @@ def generateAllCaseHistory(crimeCategory, numberOfIncidents, atLeast1ReferredCas
 	)
 
 	fig.update_layout(title =  dict(text ="KCPD Case Referrals of " + crimeCategory, font =dict(size=30, color = 'Black')), font_size=10, title_x=0.5)
-	#fig.update_layout(title =  dict(text ="KCPD Case Referrals of " + crimeCategory, font =dict(size=30, color = 'White')), font_size=10, title_x=0.5, plot_bgcolor='rgba(34,34,34,255)', paper_bgcolor='rgba(34,34,34,255)',)
 	fig.write_html("Sankeys\\KCPDClearance\\KCPDClearance - "+crimeCategory + ".html")
